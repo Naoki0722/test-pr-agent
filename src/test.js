@@ -4,4 +4,4 @@ let value = "1001";
 
 let url = `https://${domain}?${param}=${value}`;
 
-console.aa(url);
+console.log(url);
