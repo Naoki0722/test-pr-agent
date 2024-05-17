@@ -28,3 +28,24 @@ jobs:
           GITHUB_ACTION.AUTO_REVIEW: true
           GITHUB_ACTION.AUTO_DESCRIBE: true
           GITHUB_ACTION.AUTO_IMPROVE: true
+          # レビュー総評コメントである "PR Feedback" への追加プロンプト
+          PR_REVIEWER.EXTRA_INSTRUCTIONS: >-
+            日本語で回答してください。
+            以下の原則に従ってコメントしてください。
+            URLなどの構造化テキストを文字列結合で作ってはいけない。
+            置換でいじってはいけない。オブジェクトまたはライブラリを使ってください。
+          # プルリクの要約 "PR Descrition" に関する追加プロンプト
+          PR_DESCRIPTION.EXTRA_INSTRUCTIONS: >-
+            日本語で回答してください。
+            タイトルは feat: 、chore: 、test: 、fix: 、ci: 、docs: などの
+            commitlint パターンの接頭辞を含む必要があります。
+          # /improve で呼び出す修正コードの "Suggestion" 時の追加プロンプト
+          PR_CODE_SUGGESTIONS.EXTRA_INSTRUCTIONS: >-
+            日本語で回答してください。
+            以下の原則に従ってコメントしてください。
+            URLなどの構造化テキストを文字列結合で作ってはいけない。
+            置換でいじってはいけない。オブジェクトまたはライブラリを使ってください。
+          # /improve コメントの後に提案されるコードの数。
+          PR_CODE_SUGGESTIONS.NUM_CODE_SUGGESTIONS: 5
+          # Modelを変更
+          CONFIG.MODEL: gpt-4o
