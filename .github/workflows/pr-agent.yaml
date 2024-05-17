@@ -3,7 +3,7 @@ name: AI PR Review
 on:
   # open時だけに設定し、一次レビューとして利用する
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened]
 
 permissions:
   issues: write
@@ -13,37 +13,29 @@ jobs:
   pr_agent_job:
     runs-on: ubuntu-latest
     name: Run AI PR Review on opened pull request
+    env:
+      COMMON_INSTRUCTIONS: >-
+        - 日本語で回答してください。
+        - 以下の原則に従ってコメントしてください。
+          - ロジック上の問題はないか
+          - 変数や関数名が冗長で、分かりにくくなっていないか
+          - コード品質に問題がないか
+          - pythonもしくはjavascriptのコーディング規約に違反した記述はないか
+          - pydocなどの適切なコメントが関数に記述されているか
+          - 既存実装に影響を与え、バグやエラーとなる懸念点はないか
+          - セキュリティに脆弱性をもたらすようなコードになっていないか
+          - さらによりよい方向へ改善できる部分がないか
     steps:
-      - name: AI PR Review
-        id: 'ai-pr-review'
+      - name: PR Agent action step
+        id: pragent
         uses: Codium-ai/pr-agent@main
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
           GITHUB_ACTION.AUTO_REVIEW: true
-          GITHUB_ACTION.AUTO_DESCRIBE: true
+          GITHUB_ACTION.AUTO_DESCRIBE: false
           GITHUB_ACTION.AUTO_IMPROVE: true
-          PR_REVIEWER.EXTRA_INSTRUCTIONS: >-
-            日本語で回答してください。
-            以下の原則に従ってコメントしてください。
-            ロジック上の問題はないか
-            変数や関数名が冗長で、分かりにくくなっていないか
-            コード品質に問題がないか
-            pythonもしくはjavascriptのコーディング規約に違反した記述はないか
-            pydocなどの適切なコメントが関数に記述されているか
-            既存実装に影響を与え、バグやエラーとなる懸念点はないか
-            セキュリティに脆弱性をもたらすようなコードになっていないか
-            さらによりよい方向へ改善できる部分がないか
-          PR_CODE_SUGGESTIONS.EXTRA_INSTRUCTIONS: >-
-            日本語で回答してください。
-            以下の原則に従ってコメントしてください。
-            ロジック上の問題はないか
-            変数や関数名が冗長で、分かりにくくなっていないか
-            コード品質に問題がないか
-            pythonもしくはjavascriptのコーディング規約に違反した記述はないか
-            pydocなどの適切なコメントが関数に記述されているか
-            既存実装に影響を与え、バグやエラーとなる懸念点はないか
-            セキュリティに脆弱性をもたらすようなコードになっていないか
-            さらによりよい方向へ改善できる部分がないか
+          PR_REVIEWER.EXTRA_INSTRUCTIONS: ${{ env.COMMON_INSTRUCTIONS }}
+          PR_CODE_SUGGESTIONS.EXTRA_INSTRUCTIONS: ${{ env.COMMON_INSTRUCTIONS }}
           PR_CODE_SUGGESTIONS.NUM_CODE_SUGGESTIONS: 5
           CONFIG.MODEL: gpt-4o
